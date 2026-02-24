@@ -1018,13 +1018,13 @@ function loadFromURL() {
       toast('Gmail 기사가 로드되었습니다. 분석 버튼을 눌러주세요.');
       window.history.replaceState({}, '', window.location.pathname);
     }
-  } catch(e) { console.error('URL load error:', e); }
+  } catch(e) {}
 }
 
 // ── API KEY
 function saveKey() {
   const v = document.getElementById('apiInput').value.trim();
-  if (!v.startsWith('AIza')) { toast('올바른 API Key 형식이 아닙니다 (AIza...로 시작해야 해요)'); return; }
+  if (!v.startsWith('AIza')) { toast('올바른 API Key 형식이 아닙니다 (AIza...로 시작)'); return; }
   apiKey = v;
   localStorage.setItem('wsj_key', apiKey);
   setApiOk(true);
@@ -1109,9 +1109,9 @@ ${text.substring(0, 5000)}`;
       })
     });
 
-    if (!res.ok) { const e = await res.json(); throw new Error(errdata.error?.message || 'API 오류'); }
-    const resdata = await res.json();
-   let raw = resData.candidates[0].content.parts[0].text.trim().replace(/^```json\n?/, '').replace(/\n?```$/, '');
+    if (!res.ok) { const geminiErr = await res.json(); throw new Error(geminiErr.error?.message || 'API 오류'); }
+    const geminiData = await res.json();
+    let raw = geminiData.candidates[0].content.parts[0].text.trim().replace(/^```json\n?/, '').replace(/\n?```$/, '');
     currentData = JSON.parse(raw);
     renderReading();
   } catch(e) {
