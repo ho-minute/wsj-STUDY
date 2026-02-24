@@ -1024,7 +1024,7 @@ function loadFromURL() {
 // ── API KEY
 function saveKey() {
   const v = document.getElementById('apiInput').value.trim();
-  if (!v.startsWith('sk-ant-')) { toast('올바른 API Key 형식이 아닙니다'); return; }
+  if (!v.startsWith('AIza')) { toast('올바른 API Key 형식이 아닙니다'); return; }
   apiKey = v;
   localStorage.setItem('wsj_key', apiKey);
   setApiOk(true);
