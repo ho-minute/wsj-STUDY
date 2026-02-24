@@ -853,7 +853,6 @@ body {
 </head>
 <body>
 
-<!-- MASTHEAD -->
 <div class="masthead">
   <div class="masthead-top">
     <span class="masthead-date" id="hDate"></span>
@@ -873,7 +872,6 @@ body {
   </div>
 </div>
 
-<!-- NAV -->
 <nav class="nav">
   <button class="nav-tab active" onclick="goTab('read',this)">기사 읽기</button>
   <button class="nav-tab" onclick="goTab('wb',this)">단어장 <span class="nav-badge" id="wbBadge">0</span></button>
@@ -882,14 +880,13 @@ body {
 
 <div class="container">
 
-  <!-- ① 기사 읽기 -->
   <div id="p-read" class="panel active">
 
     <div id="inputSection">
       <div class="input-wrap">
         <div class="section-head">WSJ 기사 입력</div>
         <textarea class="art-textarea" id="artInput"
-          placeholder="WSJ 이메일에서 받은 기사 본문을 여기에 붙여넣으세요.&#10;&#10;Claude가 자동으로 번역하고 핵심 어휘와 표현을 정리해드립니다."></textarea>
+          placeholder="WSJ 이메일에서 받은 기사 본문을 여기에 붙여넣으세요.&#10;&#10;Gemini가 자동으로 번역하고 핵심 어휘와 표현을 정리해드립니다."></textarea>
         <div class="btn-row">
           <button class="btn-primary" onclick="analyze()" id="analyzeBtn">분석 시작</button>
           <button class="btn-ghost" onclick="resetView()">초기화</button>
@@ -909,7 +906,6 @@ body {
     <div id="readingView" style="display:none;">
       <div class="reading-layout">
 
-        <!-- 기사 본문 -->
         <div class="article-col">
           <div class="art-header">
             <div class="art-kicker">Wall Street Journal</div>
@@ -929,7 +925,6 @@ body {
           </div>
         </div>
 
-        <!-- 사이드바 -->
         <div class="sidebar">
           <div class="sidebar-section">
             <div class="sidebar-head">
@@ -951,7 +946,6 @@ body {
     </div>
   </div>
 
-  <!-- ② 단어장 -->
   <div id="p-wb" class="panel">
     <div class="wb-header">
       <div class="wb-title">내 단어장</div>
@@ -960,7 +954,6 @@ body {
     <div class="wb-grid" id="wbGrid"></div>
   </div>
 
-  <!-- ③ 복습 -->
   <div id="p-fc" class="panel">
     <div class="fc-wrap" id="fcWrap"></div>
   </div>
@@ -1018,13 +1011,13 @@ function loadFromURL() {
       toast('Gmail 기사가 로드되었습니다. 분석 버튼을 눌러주세요.');
       window.history.replaceState({}, '', window.location.pathname);
     }
-  } catch(e) {}
+  } catch(e) { console.error('URL load error:', e); }
 }
 
 // ── API KEY
 function saveKey() {
   const v = document.getElementById('apiInput').value.trim();
-  if (!v.startsWith('AIza')) { toast('올바른 API Key 형식이 아닙니다 (AIza...로 시작)'); return; }
+  if (!v.startsWith('AIza')) { toast('올바른 API Key 형식이 아닙니다 (AIza...로 시작해야 해요)'); return; }
   apiKey = v;
   localStorage.setItem('wsj_key', apiKey);
   setApiOk(true);
@@ -1109,9 +1102,12 @@ ${text.substring(0, 5000)}`;
       })
     });
 
-    if (!res.ok) { const geminiErr = await res.json(); throw new Error(geminiErr.error?.message || 'API 오류'); }
-    const geminiData = await res.json();
-    let raw = geminiData.candidates[0].content.parts[0].text.trim().replace(/^```json\n?/, '').replace(/\n?```$/, '');
+    if (!res.ok) { 
+      const e = await res.json(); 
+      throw new Error(e.error?.message || 'API 오류'); 
+    }
+    const resData = await res.json();
+    let raw = resData.candidates[0].content.parts[0].text.trim().replace(/^```json\n?/, '').replace(/\n?```$/, '');
     currentData = JSON.parse(raw);
     renderReading();
   } catch(e) {
