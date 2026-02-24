@@ -1018,7 +1018,7 @@ function loadFromURL() {
       toast('Gmail 기사가 로드되었습니다. 분석 버튼을 눌러주세요.');
       window.history.replaceState({}, '', window.location.pathname);
     }
-  } catch(e) {}
+  } catch(e) {toast('로드 오류: ' + e.message);}
 }
 
 // ── API KEY
