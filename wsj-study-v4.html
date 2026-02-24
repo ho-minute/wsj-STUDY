@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WSJ Study</title>
+<link href="https://fonts.googleapis.com/css2?family=Escrow+Condensed:ital,wght@0,400;0,700;1,400&family=Retina:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --wsj-red: #d0021b;
+  --wsj-red-dark: #a80015;
+  --black: #111111;
+  --gray-1: #333333;
+  --gray-2: #555555;
+  --gray-3: #888888;
+  --gray-4: #bbbbbb;
+  --gray-5: #e8e8e8;
+  --gray-6: #f4f4f4;
+  --white: #ffffff;
+  --gold: #c9860c;
+  --border: #dddddd;
+  --font-headline: 'Playfair Display', 'Libre Baskerville', Georgia, serif;
+  --font-body: 'Libre Baskerville', Georgia, serif;
+  --font-sans: 'Source Sans 3', Helvetica, Arial, sans-serif;
+}
+
+html { font-size: 16px; }
+body {
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ══════════════════════════════
+   MASTHEAD
+══════════════════════════════ */
+.masthead {
+  border-bottom: 3px solid var(--black);
+  background: var(--white);
+}
+
+.masthead-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--gray-6);
+}
+
+.masthead-date {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--gray-2);
+  letter-spacing: 0.02em;
+}
+
+.masthead-streak {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--wsj-red);
+}
+
+.masthead-center {
+  text-align: center;
+  padding: 16px 24px 12px;
+  position: relative;
+}
+
+.masthead-logo {
+  font-family: var(--font-headline);
+  font-size: 52px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--black);
+}
+
+.masthead-logo .dot { color: var(--wsj-red); }
+
+.masthead-rule {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 0;
+}
+
+.masthead-rule::before,
+.masthead-rule::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--black);
+}
+
+.masthead-tagline {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray-2);
+  white-space: nowrap;
+}
+
+/* API BAR */
+.api-bar {
+  background: var(--gray-6);
+  border-top: 1px solid var(--border);
+  padding: 7px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.api-label {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray-2);
+  white-space: nowrap;
+}
+
+.api-input {
+  flex: 1;
+  max-width: 360px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  padding: 5px 8px;
+  color: var(--black);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.api-input:focus { border-color: var(--black); }
+
+.api-btn {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--black);
+  color: var(--white);
+  border: none;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.api-btn:hover { background: var(--wsj-red); }
+
+.api-status {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--gray-3);
+}
+.api-status.ok { color: #2a7a2a; font-weight: 600; }
+
+/* ══════════════════════════════
+   NAV TABS
+══════════════════════════════ */
+.nav {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.nav-tab {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 13px 16px;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
+  color: var(--gray-2);
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+.nav-tab:hover { color: var(--black); }
+.nav-tab.active { color: var(--wsj-red); border-bottom-color: var(--wsj-red); }
+
+.nav-badge {
+  background: var(--wsj-red);
+  color: var(--white);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 8px;
+  min-width: 15px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* ══════════════════════════════
+   MAIN LAYOUT
+══════════════════════════════ */
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 24px;
+}
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ══════════════════════════════
+   INPUT SECTION
+══════════════════════════════ */
+.input-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.section-head {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gray-3);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.art-textarea {
+  width: 100%;
+  height: 180px;
+  border: 1px solid var(--border);
+  padding: 14px 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--black);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s;
+  background: var(--white);
+}
+.art-textarea:focus { border-color: var(--black); }
+.art-textarea::placeholder { color: var(--gray-4); font-style: italic; }
+
+.btn-row { display: flex; gap: 10px; margin-top: 12px; align-items: center; }
+
+.btn-primary {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--wsj-red);
+  color: var(--white);
+  border: none;
+  padding: 11px 24px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-primary:hover { background: var(--wsj-red-dark); }
+.btn-primary:disabled { background: var(--gray-4); cursor: not-allowed; }
+
+.btn-ghost {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  background: none;
+  color: var(--gray-2);
+  border: 1px solid var(--border);
+  padding: 10px 18px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-ghost:hover { border-color: var(--black); color: var(--black); }
+
+/* ══════════════════════════════
+   LOADING
+══════════════════════════════ */
+.loading {
+  display: none;
+  text-align: center;
+  padding: 60px 24px;
+}
+.loading.active { display: block; }
+.loading-rule {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.loading-dot {
+  width: 6px; height: 6px;
+  background: var(--wsj-red);
+  border-radius: 50%;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+.loading-dot:nth-child(2) { animation-delay: 0.2s; }
+.loading-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes pulse { 0%,80%,100%{opacity:0.2;transform:scale(0.8)} 40%{opacity:1;transform:scale(1)} }
+.loading-text {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray-3);
+}
+
+/* ══════════════════════════════
+   READING VIEW
+══════════════════════════════ */
+.reading-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 32px;
+  align-items: start;
+}
+
+/* Article */
+.art-header {
+  border-top: 4px solid var(--black);
+  padding-top: 16px;
+  margin-bottom: 20px;
+}
+
+.art-kicker {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--wsj-red);
+  margin-bottom: 8px;
+}
+
+.art-headline {
+  font-family: var(--font-headline);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--black);
+  margin-bottom: 14px;
+}
+
+/* View mode toggle */
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.vtab {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  cursor: pointer;
+  border: none;
+  background: var(--white);
+  color: var(--gray-2);
+  border-right: 1px solid var(--border);
+  transition: all 0.12s;
+}
+.vtab:last-child { border-right: none; }
+.vtab:hover { background: var(--gray-6); }
+.vtab.active { background: var(--black); color: var(--white); }
+
+/* Paragraph blocks */
+.para-block {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--gray-5);
+}
+.para-block:last-child { border-bottom: none; }
+
+.para-num {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--gray-4);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.para-en {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--black);
+}
+
+.para-ko {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--gray-2);
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+
+/* vocab highlight */
+.hl {
+  background: #fff9c4;
+  border-bottom: 2px solid #e6c800;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.hl:hover { background: #fff176; }
+
+/* ══════════════════════════════
+   SIDEBAR
+══════════════════════════════ */
+.sidebar { position: sticky; top: 56px; }
+
+.sidebar-section {
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+.sidebar-head {
+  background: var(--black);
+  color: var(--white);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar-head-title {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.sidebar-head-count {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  color: var(--gray-4);
+}
+
+.vocab-scroll { max-height: 480px; overflow-y: auto; }
+
+.vitem {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--gray-5);
+  transition: background 0.1s;
+}
+.vitem:last-child { border-bottom: none; }
+.vitem:hover { background: var(--gray-6); }
+
+.vitem-word {
+  font-family: var(--font-headline);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--black);
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.vitem-pos {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--wsj-red);
+  background: #fff0f0;
+  border: 1px solid #ffd0d0;
+  padding: 1px 5px;
+}
+
+.vitem-ko {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--wsj-red);
+  margin-top: 2px;
+}
+
+.vitem-def {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--gray-3);
+  font-style: italic;
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+.vitem-ex {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--gray-2);
+  margin-top: 6px;
+  padding-left: 8px;
+  border-left: 2px solid var(--border);
+  line-height: 1.55;
+  font-style: italic;
+}
+
+.btn-save {
+  margin-top: 8px;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--black);
+  color: var(--white);
+  border: none;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-save:hover { background: var(--wsj-red); }
+.btn-save.saved { background: var(--gold); color: var(--white); }
+
+/* Expressions */
+.eitem {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--gray-5);
+}
+.eitem:last-child { border-bottom: none; }
+
+.eitem-phrase {
+  font-family: var(--font-headline);
+  font-size: 14px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--black);
+}
+
+.eitem-ko {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gold);
+  margin-top: 3px;
+}
+
+.eitem-ctx {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--gray-3);
+  font-style: italic;
+  margin-top: 5px;
+  line-height: 1.5;
+}
+
+.eitem-trans {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--gray-2);
+  margin-top: 4px;
+  padding-left: 8px;
+  border-left: 2px solid var(--border);
+  line-height: 1.4;
+}
+
+/* ══════════════════════════════
+   WORDBOOK
+══════════════════════════════ */
+.wb-header {
+  border-top: 4px solid var(--black);
+  padding-top: 16px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.wb-title {
+  font-family: var(--font-headline);
+  font-size: 32px;
+  font-weight: 900;
+}
+
+.wb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.wb-card {
+  background: var(--white);
+  padding: 16px;
+  position: relative;
+  transition: background 0.1s;
+}
+.wb-card:hover { background: var(--gray-6); }
+
+.wb-word {
+  font-family: var(--font-headline);
+  font-size: 20px;
+  font-weight: 700;
+  padding-right: 24px;
+}
+
+.wb-ko {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--wsj-red);
+  margin-top: 3px;
+}
+
+.wb-def {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--gray-3);
+  font-style: italic;
+  margin-top: 5px;
+  line-height: 1.4;
+}
+
+.wb-date {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  color: var(--gray-4);
+  margin-top: 10px;
+  letter-spacing: 0.04em;
+}
+
+.wb-del {
+  position: absolute;
+  top: 10px; right: 10px;
+  background: none;
+  border: none;
+  color: var(--gray-4);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px 5px;
+  transition: color 0.1s;
+}
+.wb-del:hover { color: var(--wsj-red); }
+
+.empty-state {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 80px 24px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--gray-3);
+  font-style: italic;
+}
+
+/* ══════════════════════════════
+   FLASHCARD
+══════════════════════════════ */
+.fc-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 0;
+}
+
+.fc-prog {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray-3);
+  margin-bottom: 32px;
+}
+
+.flashcard {
+  width: 480px;
+  height: 280px;
+  perspective: 1000px;
+  cursor: pointer;
+  margin-bottom: 28px;
+}
+
+.fc-inner {
+  width: 100%; height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
+}
+
+.flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+
+.fc-face {
+  position: absolute;
+  width: 100%; height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  text-align: center;
+}
+
+.fc-front {
+  background: var(--black);
+  color: var(--white);
+  border-top: 4px solid var(--wsj-red);
+}
+
+.fc-back {
+  background: var(--white);
+  color: var(--black);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--gold);
+  transform: rotateY(180deg);
+}
+
+.fc-hint {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray-3);
+  margin-bottom: 18px;
+}
+
+.fc-word {
+  font-family: var(--font-headline);
+  font-size: 44px;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.fc-pos-tag {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--wsj-red);
+  margin-top: 10px;
+}
+
+.fc-ko {
+  font-family: var(--font-sans);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--wsj-red);
+  margin-bottom: 12px;
+}
+
+.fc-def {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--gray-2);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.fc-btns { display: flex; gap: 12px; }
+
+.fc-btn {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 11px 28px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.fc-btn.again { background: #fff0f0; color: var(--wsj-red); border: 1px solid #ffd0d0; }
+.fc-btn.again:hover { background: var(--wsj-red); color: var(--white); }
+.fc-btn.good { background: var(--black); color: var(--white); }
+.fc-btn.good:hover { background: #2a7a2a; }
+
+.fc-done {
+  text-align: center;
+  padding: 60px;
+  font-family: var(--font-sans);
+  color: var(--gray-3);
+}
+.fc-done strong {
+  display: block;
+  font-family: var(--font-headline);
+  font-size: 30px;
+  color: var(--black);
+  margin-bottom: 10px;
+}
+
+/* ══════════════════════════════
+   TOAST
+══════════════════════════════ */
+.toast {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 10px 16px;
+  border-left: 3px solid var(--wsj-red);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: all 0.22s;
+  z-index: 9999;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+/* ══════════════════════════════
+   RESPONSIVE
+══════════════════════════════ */
+@media (max-width: 860px) {
+  .reading-layout { grid-template-columns: 1fr; }
+  .sidebar { position: static; }
+  .flashcard { width: 100%; }
+  .container { padding: 20px 16px; }
+  .masthead-logo { font-size: 38px; }
+}
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-top">
+    <span class="masthead-date" id="hDate"></span>
+    <span class="masthead-streak" id="hStreak"></span>
+  </div>
+  <div class="masthead-center">
+    <div class="masthead-logo">WSJ<span class="dot">.</span>Study</div>
+    <div class="masthead-rule">
+      <span class="masthead-tagline">Wall Street Journal · 영어 학습 에디션</span>
+    </div>
+  </div>
+  <div class="api-bar">
+    <span class="api-label">API Key</span>
+    <input class="api-input" type="password" id="apiInput" placeholder="sk-ant-api03-...">
+    <button class="api-btn" onclick="saveKey()">저장</button>
+    <span class="api-status" id="apiStatus">키를 입력하세요</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-tab active" onclick="goTab('read',this)">기사 읽기</button>
+  <button class="nav-tab" onclick="goTab('wb',this)">단어장 <span class="nav-badge" id="wbBadge">0</span></button>
+  <button class="nav-tab" onclick="goTab('fc',this)">복습 <span class="nav-badge" id="fcBadge">0</span></button>
+</nav>
+
+<div class="container">
+
+  <!-- ① 기사 읽기 -->
+  <div id="p-read" class="panel active">
+
+    <div id="inputSection">
+      <div class="input-wrap">
+        <div class="section-head">WSJ 기사 입력</div>
+        <textarea class="art-textarea" id="artInput"
+          placeholder="WSJ 이메일에서 받은 기사 본문을 여기에 붙여넣으세요.&#10;&#10;Claude가 자동으로 번역하고 핵심 어휘와 표현을 정리해드립니다."></textarea>
+        <div class="btn-row">
+          <button class="btn-primary" onclick="analyze()" id="analyzeBtn">분석 시작</button>
+          <button class="btn-ghost" onclick="resetView()">초기화</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="loading" id="loadingMsg">
+      <div class="loading-rule">
+        <div class="loading-dot"></div>
+        <div class="loading-dot"></div>
+        <div class="loading-dot"></div>
+      </div>
+      <div class="loading-text">번역 & 어휘 분석 중</div>
+    </div>
+
+    <div id="readingView" style="display:none;">
+      <div class="reading-layout">
+
+        <!-- 기사 본문 -->
+        <div class="article-col">
+          <div class="art-header">
+            <div class="art-kicker">Wall Street Journal</div>
+            <div class="art-headline" id="artTitle"></div>
+          </div>
+
+          <div class="view-toggle">
+            <button class="vtab active" onclick="setView('en',this)">영어 원문</button>
+            <button class="vtab" onclick="setView('bilingual',this)">영한 대역</button>
+            <button class="vtab" onclick="setView('ko',this)">한국어만</button>
+          </div>
+
+          <div id="paraList"></div>
+
+          <div style="margin-top:24px;">
+            <button class="btn-ghost" onclick="resetView()">← 다른 기사 분석</button>
+          </div>
+        </div>
+
+        <!-- 사이드바 -->
+        <div class="sidebar">
+          <div class="sidebar-section">
+            <div class="sidebar-head">
+              <span class="sidebar-head-title">핵심 어휘</span>
+              <span class="sidebar-head-count" id="vocabCount"></span>
+            </div>
+            <div class="vocab-scroll" id="vocabList"></div>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="sidebar-head">
+              <span class="sidebar-head-title">Key Expressions</span>
+            </div>
+            <div id="exprList"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 단어장 -->
+  <div id="p-wb" class="panel">
+    <div class="wb-header">
+      <div class="wb-title">내 단어장</div>
+      <button class="btn-ghost" onclick="clearWb()">전체 삭제</button>
+    </div>
+    <div class="wb-grid" id="wbGrid"></div>
+  </div>
+
+  <!-- ③ 복습 -->
+  <div id="p-fc" class="panel">
+    <div class="fc-wrap" id="fcWrap"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATE
+let apiKey = localStorage.getItem('wsj_key') || '';
+let wordbook = JSON.parse(localStorage.getItem('wsj_wb') || '[]');
+let currentData = null;
+let currentView = 'en';
+let fcQueue = [], fcIdx = 0, fcFlipped = false;
+
+// ── INIT
+function init() {
+  document.getElementById('hDate').textContent =
+    new Date().toLocaleDateString('en-US', {weekday:'long', year:'numeric', month:'long', day:'numeric'}).toUpperCase();
+  updateStreak();
+  loadFromURL();
+  if (apiKey) {
+    document.getElementById('apiInput').value = apiKey;
+    setApiOk(true);
+  }
+  updateBadges();
+  renderWb();
+}
+
+function updateStreak() {
+  const today = new Date().toDateString();
+  const last = localStorage.getItem('wsj_last');
+  const yest = new Date(Date.now() - 86400000).toDateString();
+  let s = parseInt(localStorage.getItem('wsj_streak') || '0');
+  if (last !== today) {
+    s = (last === yest) ? s + 1 : 1;
+    localStorage.setItem('wsj_streak', s);
+    localStorage.setItem('wsj_last', today);
+  }
+  document.getElementById('hStreak').textContent = `🔥 ${s}일 연속 학습`;
+}
+
+function loadFromURL() {
+  try {
+    const p = new URLSearchParams(window.location.search);
+    const enc = p.get('article');
+    if (!enc) return;
+    const bin = atob(enc.replace(/-/g, '+').replace(/_/g, '/'));
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    const text = new TextDecoder('utf-8').decode(bytes);
+    if (text && text.length > 100) {
+      document.getElementById('artInput').value = text;
+      toast('Gmail 기사가 로드되었습니다. 분석 버튼을 눌러주세요.');
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  } catch(e) {}
+}
+
+// ── API KEY
+function saveKey() {
+  const v = document.getElementById('apiInput').value.trim();
+  if (!v.startsWith('sk-ant-')) { toast('올바른 API Key 형식이 아닙니다'); return; }
+  apiKey = v;
+  localStorage.setItem('wsj_key', apiKey);
+  setApiOk(true);
+  toast('API Key가 저장되었습니다');
+}
+
+function setApiOk(ok) {
+  const el = document.getElementById('apiStatus');
+  el.textContent = ok ? '✓ 저장됨' : '키를 입력하세요';
+  el.className = 'api-status' + (ok ? ' ok' : '');
+}
+
+// ── TABS
+function goTab(name, el) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('p-' + name).classList.add('active');
+  if (name === 'fc') initFC();
+  if (name === 'wb') renderWb();
+}
+
+// ── ANALYZE
+async function analyze() {
+  if (!apiKey) { toast('API Key를 먼저 입력하세요'); return; }
+  const text = document.getElementById('artInput').value.trim();
+  if (text.length < 100) { toast('기사 내용을 입력해주세요'); return; }
+
+  document.getElementById('loadingMsg').classList.add('active');
+  document.getElementById('analyzeBtn').disabled = true;
+  document.getElementById('readingView').style.display = 'none';
+  document.getElementById('inputSection').style.display = 'none';
+
+  const prompt = `You are an English teacher for Korean intermediate learners reading WSJ articles.
+
+Analyze this article and respond ONLY with valid JSON (no markdown fences):
+
+{
+  "title": "article headline",
+  "paragraphs": [
+    {
+      "en": "original English paragraph text",
+      "ko": "natural Korean translation"
+    }
+  ],
+  "vocabulary": [
+    {
+      "word": "target word",
+      "pos": "n/v/adj/adv",
+      "korean": "한국어 뜻",
+      "definition": "concise English definition",
+      "example": "sentence from article using this word"
+    }
+  ],
+  "expressions": [
+    {
+      "phrase": "key phrase or idiom",
+      "korean": "한국어 의미",
+      "context": "sentence from article",
+      "translation": "한국어 번역"
+    }
+  ]
+}
+
+Rules:
+- Split into natural paragraphs (5-12 paragraphs)
+- Select 6-10 vocabulary words: advanced, financial, business English
+- Select 3-5 key expressions or idioms
+- Korean must be natural, not literal
+- Respond ONLY with the JSON object
+
+Article:
+${text.substring(0, 5000)}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 4000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'API 오류'); }
+    const data = await res.json();
+    let raw = data.content[0].text.trim().replace(/^```json\n?/, '').replace(/\n?```$/, '');
+    currentData = JSON.parse(raw);
+    renderReading();
+  } catch(e) {
+    toast('오류: ' + e.message);
+    document.getElementById('inputSection').style.display = 'block';
+  } finally {
+    document.getElementById('loadingMsg').classList.remove('active');
+    document.getElementById('analyzeBtn').disabled = false;
+  }
+}
+
+// ── RENDER
+function renderReading() {
+  document.getElementById('artTitle').textContent = currentData.title || '';
+  document.getElementById('readingView').style.display = 'block';
+  renderParas();
+  renderVocab();
+  renderExpr();
+  updateStreak();
+}
+
+function renderParas() {
+  const paras = currentData.paragraphs || [];
+  document.getElementById('paraList').innerHTML = paras.map((p, i) => {
+    let enText = p.en;
+    (currentData.vocabulary || []).forEach(v => {
+      const re = new RegExp(`\\b(${v.word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})\\b`, 'gi');
+      enText = enText.replace(re, `<span class="hl" title="${v.korean}">$1</span>`);
+    });
+
+    let html = `<div class="para-block"><div class="para-num">¶ ${i + 1}</div>`;
+    if (currentView !== 'ko') html += `<div class="para-en">${enText}</div>`;
+    if (currentView === 'ko') html += `<div class="para-ko" style="font-style:normal;color:var(--black)">${p.ko}</div>`;
+    if (currentView === 'bilingual') html += `<div class="para-ko">${p.ko}</div>`;
+    html += `</div>`;
+    return html;
+  }).join('');
+}
+
+function setView(mode, el) {
+  currentView = mode;
+  document.querySelectorAll('.vtab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderParas();
+}
+
+function renderVocab() {
+  const vocab = currentData.vocabulary || [];
+  document.getElementById('vocabCount').textContent = vocab.length + '개';
+  document.getElementById('vocabList').innerHTML = vocab.map((v, i) => {
+    const saved = isSaved(v.word);
+    return `<div class="vitem">
+      <div class="vitem-word">${v.word} <span class="vitem-pos">${v.pos}</span></div>
+      <div class="vitem-ko">${v.korean}</div>
+      <div class="vitem-def">${v.definition}</div>
+      ${v.example ? `<div class="vitem-ex">${v.example}</div>` : ''}
+      <button class="btn-save ${saved ? 'saved' : ''}" id="vs${i}"
+        onclick='toggleSave(${JSON.stringify(v).replace(/'/g,"&#39;")}, "vs${i}")'>
+        ${saved ? '✓ 저장됨' : '+ 저장'}
+      </button>
+    </div>`;
+  }).join('');
+}
+
+function renderExpr() {
+  const exprs = currentData.expressions || [];
+  document.getElementById('exprList').innerHTML = exprs.map(e => `
+    <div class="eitem">
+      <div class="eitem-phrase">"${e.phrase}"</div>
+      <div class="eitem-ko">${e.korean}</div>
+      ${e.context ? `<div class="eitem-ctx">${e.context}</div>` : ''}
+      ${e.translation ? `<div class="eitem-trans">${e.translation}</div>` : ''}
+    </div>`).join('');
+}
+
+function resetView() {
+  document.getElementById('inputSection').style.display = 'block';
+  document.getElementById('readingView').style.display = 'none';
+  document.getElementById('artInput').value = '';
+  currentData = null;
+  currentView = 'en';
+}
+
+// ── WORDBOOK
+function isSaved(word) { return wordbook.some(w => w.word.toLowerCase() === word.toLowerCase()); }
+
+function toggleSave(v, btnId) {
+  const btn = document.getElementById(btnId);
+  if (isSaved(v.word)) {
+    wordbook = wordbook.filter(w => w.word.toLowerCase() !== v.word.toLowerCase());
+    btn.textContent = '+ 저장'; btn.classList.remove('saved');
+    toast(`"${v.word}" 삭제됨`);
+  } else {
+    wordbook.push({ ...v, savedAt: new Date().toISOString() });
+    btn.textContent = '✓ 저장됨'; btn.classList.add('saved');
+    toast(`"${v.word}" 단어장에 저장!`);
+  }
+  localStorage.setItem('wsj_wb', JSON.stringify(wordbook));
+  updateBadges();
+}
+
+function renderWb() {
+  const g = document.getElementById('wbGrid');
+  if (!wordbook.length) {
+    g.innerHTML = '<div class="empty-state">아직 저장된 단어가 없습니다.<br>기사를 분석하고 단어를 저장해보세요.</div>';
+    return;
+  }
+  g.innerHTML = wordbook.slice().reverse().map((w, i) => {
+    const ri = wordbook.length - 1 - i;
+    return `<div class="wb-card">
+      <button class="wb-del" onclick="delWord(${ri})">×</button>
+      <div class="wb-word">${w.word}</div>
+      <div class="wb-ko">${w.korean}</div>
+      <div class="wb-def">${w.definition || ''}</div>
+      <div class="wb-date">${new Date(w.savedAt).toLocaleDateString('ko-KR')}</div>
+    </div>`;
+  }).join('');
+}
+
+function delWord(i) {
+  const w = wordbook[i].word;
+  wordbook.splice(i, 1);
+  localStorage.setItem('wsj_wb', JSON.stringify(wordbook));
+  updateBadges(); renderWb();
+  toast(`"${w}" 삭제됨`);
+}
+
+function clearWb() {
+  if (!confirm(`단어장의 모든 단어(${wordbook.length}개)를 삭제할까요?`)) return;
+  wordbook = [];
+  localStorage.setItem('wsj_wb', JSON.stringify(wordbook));
+  updateBadges(); renderWb();
+}
+
+// ── FLASHCARD
+function initFC() {
+  fcQueue = [...wordbook].sort(() => Math.random() - 0.5);
+  fcIdx = 0; fcFlipped = false;
+  renderFC();
+}
+
+function renderFC() {
+  const wrap = document.getElementById('fcWrap');
+  if (!wordbook.length) {
+    wrap.innerHTML = '<div class="fc-done"><strong>단어장이 비어있어요</strong>기사를 분석하고 단어를 저장해보세요!</div>';
+    return;
+  }
+  if (fcIdx >= fcQueue.length) {
+    wrap.innerHTML = `<div class="fc-done"><strong>복습 완료!</strong>${fcQueue.length}개 단어를 모두 복습했습니다.<br><br><button class="btn-primary" onclick="initFC()" style="margin-top:16px;">다시 복습하기</button></div>`;
+    return;
+  }
+  const w = fcQueue[fcIdx];
+  wrap.innerHTML = `
+    <div class="fc-prog">${fcIdx + 1} / ${fcQueue.length}</div>
+    <div class="flashcard" id="fc" onclick="flipFC()">
+      <div class="fc-inner">
+        <div class="fc-face fc-front">
+          <div class="fc-hint">Tap to flip</div>
+          <div class="fc-word">${w.word}</div>
+          <div class="fc-pos-tag">${w.pos || ''}</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-ko">${w.korean}</div>
+          <div class="fc-def">${w.definition || ''}</div>
+        </div>
+      </div>
+    </div>
+    <div class="fc-btns" id="fcBtns" style="display:none;">
+      <button class="fc-btn again" onclick="fcAns(false)">다시</button>
+      <button class="fc-btn good" onclick="fcAns(true)">알았어요 ✓</button>
+    </div>`;
+  fcFlipped = false;
+}
+
+function flipFC() {
+  fcFlipped = !fcFlipped;
+  document.getElementById('fc').classList.toggle('flipped', fcFlipped);
+  if (fcFlipped) document.getElementById('fcBtns').style.display = 'flex';
+}
+
+function fcAns(ok) {
+  if (!ok) fcQueue.push(fcQueue[fcIdx]);
+  fcIdx++; renderFC();
+}
+
+// ── UTILS
+function updateBadges() {
+  const n = wordbook.length;
+  document.getElementById('wbBadge').textContent = n;
+  document.getElementById('fcBadge').textContent = n;
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+init();
+</script>
+</body>
+</html>
